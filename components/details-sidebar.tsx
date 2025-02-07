@@ -1,6 +1,7 @@
 "use client"
 
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet"
+import { X } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,7 +21,13 @@ export function DetailsSidebar({ isOpen, onClose, event }: DetailsSidebarProps) 
       <SheetContent className="w-full sm:w-[540px] overflow-y-auto">
         <SheetHeader className="space-y-1">
           <SheetTitle className="flex items-center justify-between">
-            Webhook Event Details
+            <div className="flex justify-between items-center w-full pr-8">
+              Webhook Event Details
+              <SheetClose className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+              </SheetClose>
+            </div>
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-80px)] pr-4">
