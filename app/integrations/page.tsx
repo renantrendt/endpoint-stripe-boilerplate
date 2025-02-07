@@ -1,3 +1,5 @@
+"use client"
+
 import { IntegrationsForm } from "@/components/integrations-form"
 
 export default function IntegrationsPage() {
