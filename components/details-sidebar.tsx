@@ -13,6 +13,8 @@ interface DetailsSidebarProps {
 }
 
 export function DetailsSidebar({ isOpen, onClose, event }: DetailsSidebarProps) {
+  console.log('DetailsSidebar render - isOpen:', isOpen, 'event:', event)
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="w-full sm:w-[540px] overflow-y-auto">
@@ -32,11 +34,11 @@ export function DetailsSidebar({ isOpen, onClose, event }: DetailsSidebarProps) 
                   <div className="grid gap-4">
                     <div>
                       <div className="text-sm font-medium text-muted-foreground">
-                        Payment Status
+                        Status
                       </div>
                       <div className="mt-1">
-                        <Badge variant={event.payment_status === 'succeeded' ? 'success' : 'destructive'}>
-                          {event.payment_status}
+                        <Badge variant={event.status === 'succeeded' ? 'success' : 'destructive'}>
+                          {event.status || 'pending'}
                         </Badge>
                       </div>
                     </div>
@@ -45,10 +47,10 @@ export function DetailsSidebar({ isOpen, onClose, event }: DetailsSidebarProps) 
                         Amount
                       </div>
                       <div className="text-sm font-medium mt-1">
-                        {new Intl.NumberFormat('en-US', {
+                        {event.amount_received ? new Intl.NumberFormat('en-US', {
                           style: 'currency',
                           currency: event.currency || 'USD'
-                        }).format(event.amount / 100)}
+                        }).format(event.amount_received / 100) : '-'}
                       </div>
                     </div>
                     <div>
@@ -83,11 +85,48 @@ export function DetailsSidebar({ isOpen, onClose, event }: DetailsSidebarProps) 
 
               <Card>
                 <CardHeader>
+                  <CardTitle>Shipping Information</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  <div className="grid gap-4">
+                    <div>
+                      <div className="text-sm font-medium text-muted-foreground">
+                        Shipping Name
+                      </div>
+                      <div className="text-sm font-medium mt-1">{event.shipping_name || '-'}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-muted-foreground">
+                        Shipping Phone
+                      </div>
+                      <div className="text-sm font-medium mt-1">{event.shipping_phone || '-'}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-muted-foreground">
+                        Shipping Address
+                      </div>
+                      <div className="text-sm font-medium mt-1">
+                        {event.shipping_address_line1 ? (
+                          <>
+                            {event.shipping_address_line1}<br />
+                            {event.shipping_address_line2 && <>{event.shipping_address_line2}<br /></>}
+                            {event.shipping_address_city}, {event.shipping_address_state} {event.shipping_address_postal_code}<br />
+                            {event.shipping_address_country}
+                          </>
+                        ) : '-'}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
                   <CardTitle>Full Payload</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <pre className="bg-secondary p-4 rounded-lg overflow-auto max-h-[400px] text-sm">
-                    {JSON.stringify(event.raw_payload, null, 2)}
+                    {JSON.stringify(event.payload, null, 2)}
                   </pre>
                 </CardContent>
               </Card>

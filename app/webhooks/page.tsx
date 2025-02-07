@@ -10,13 +10,28 @@ export default function WebhooksPage() {
   const [selectedEvent, setSelectedEvent] = useState<WebhookEvent | null>(null)
   const [events, setEvents] = useState<WebhookEvent[]>([])
   const [loading, setLoading] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const handleEventSelect = (event: WebhookEvent) => {
+    console.log('handleEventSelect called with event:', event)
+    setSelectedEvent(event)
+    setSidebarOpen(true)
+    console.log('After setting state - selectedEvent:', event, 'sidebarOpen:', true)
+  }
+
+  const handleSidebarClose = () => {
+    console.log('handleSidebarClose called')
+    setSidebarOpen(false)
+    setSelectedEvent(null)
+    console.log('After closing sidebar - selectedEvent: null, sidebarOpen:', false)
+  }
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         console.log('Fetching webhook events...')
         const { data, error } = await supabase
-          .from('stripe_webhook_events')
+          .from('webhook_events')
           .select('*')
           .order('created_at', { ascending: false })
 
@@ -37,13 +52,13 @@ export default function WebhooksPage() {
 
     // Subscribe to realtime updates
     const channel = supabase
-      .channel('stripe-webhook-events')
+      .channel('webhook-events')
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'stripe_webhook_events',
+          table: 'webhook_events',
         },
         (payload) => {
           const newEvent = payload.new as WebhookEvent
@@ -78,12 +93,12 @@ export default function WebhooksPage() {
 
       <WebhookTable
         events={events}
-        onEventSelect={setSelectedEvent}
+        onEventSelect={handleEventSelect}
       />
 
       <DetailsSidebar
-        isOpen={!!selectedEvent}
-        onClose={() => setSelectedEvent(null)}
+        isOpen={sidebarOpen}
+        onClose={handleSidebarClose}
         event={selectedEvent}
       />
     </div>

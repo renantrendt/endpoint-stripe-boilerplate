@@ -48,10 +48,10 @@ const columns: ColumnDef<WebhookEvent>[] = [
     header: "Amount",
     cell: ({ row }) => {
       const amount = row.getValue("amount_received") as number
-      const currency = row.getValue("currency") as string
+      const data = row.original
       return amount ? new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: currency || 'USD'
+        currency: data.currency || 'USD'
       }).format(amount / 100) : '-'
     },
   },
@@ -71,11 +71,17 @@ interface WebhookTableProps {
 }
 
 export function WebhookTable({ events, onEventSelect }: WebhookTableProps) {
+  const handleRowClick = (row: any) => {
+    console.log('WebhookTable - Row clicked:', row)
+    console.log('WebhookTable - Row data:', row.original)
+    onEventSelect(row.original)
+  }
+
   return (
     <DataTable
       columns={columns}
       data={events}
-      onRowClick={(row) => onEventSelect(row.original)}
+      onRowClick={handleRowClick}
     />
   )
 }
