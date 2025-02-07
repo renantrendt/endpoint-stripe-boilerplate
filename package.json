@@ -39,6 +39,7 @@
     "@radix-ui/react-tooltip": "^1.1.6",
     "@supabase/supabase-js": "^2.48.1",
     "@tanstack/react-table": "^8.20.6",
+    "@tremor/react": "^3.18.7",
     "@types/hoist-non-react-statics": "latest",
     "@types/node": "latest",
     "@types/react": "latest",

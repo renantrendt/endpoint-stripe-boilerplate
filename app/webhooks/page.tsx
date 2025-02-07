@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { WebhookEvent } from "@/types/webhook"
 import { DetailsSidebar } from "@/components/details-sidebar"
 import { WebhookTable } from "@/components/webhook-table"
+import { WebhookSparkChart } from "@/components/webhook-spark-chart"
 import { supabase } from "@/lib/supabase"
 
 export default function WebhooksPage() {
@@ -27,6 +28,7 @@ export default function WebhooksPage() {
   }
 
   useEffect(() => {
+    console.log('%cWebhooksPage - Component mounted', 'color: #4f46e5; font-weight: bold;')
     const fetchEvents = async () => {
       try {
         console.log('Fetching webhook events...')
@@ -39,8 +41,14 @@ export default function WebhooksPage() {
           console.error('Supabase error:', error)
           throw error
         }
-        console.log('Received webhook events:', data?.length || 0, 'events')
-        setEvents(data || [])
+        console.log('%cWebhooksPage - Fetched events:', 'color: #4f46e5; font-weight: bold;', {
+          count: data?.length || 0,
+          firstEvent: data?.[0],
+          lastEvent: data?.[data?.length - 1]
+        })
+        const processedEvents = data || []
+        console.log('%cWebhooksPage - Setting events:', 'color: #4f46e5; font-weight: bold;', processedEvents)
+        setEvents(processedEvents)
       } catch (error) {
         console.error('Error fetching webhook events:', error)
       } finally {
@@ -81,13 +89,16 @@ export default function WebhooksPage() {
   }
 
   return (
-    <div className="h-full flex-1 flex-col space-y-4 p-4 md:p-8 flex">
-      <div className="flex justify-between items-center">
+    <div className="h-full flex-1 flex-col p-4 md:p-8 flex">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Webhook Events</h1>
           <p className="text-muted-foreground">
             Monitor and analyze incoming webhook events
           </p>
+        </div>
+        <div className="w-full md:w-72 mt-4 md:mt-0">
+          <WebhookSparkChart events={events} />
         </div>
       </div>
 
